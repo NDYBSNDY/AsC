@@ -26,17 +26,6 @@ import res_mixup_model
 import res12_mixup_model
 from io_utils import parse_args, get_resume_file ,get_assigned_file
 from os import path
-"""
-os.environ["CUDA_VISIBLE_DEVICES"] = '0'
-
-print(torch.cuda.is_available())#是否有可用的gpu
-print(torch.cuda.device_count())#有几个可用的gpu
-print(torch.cuda.current_device())#可用gpu编号
-print( torch.cuda.get_device_capability(device=None),  torch.cuda.get_device_name(device=None))#可用gpu内存大小，可用gpu的名字
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"#声明gpu
-dev=torch.device('cuda:0')#调用哪个gpu
-a=torch.rand(100,100).to(dev)
-"""
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -327,46 +316,46 @@ if __name__ == '__main__':
                 model = torch.nn.DataParallel(model, device_ids = range(torch.cuda.device_count()))  
             model.cuda()
 
-        # if params.resume:
-        #
-        #     resume_file = get_resume_file(params.checkpoint_dir)
-        #     print("resume_file" , resume_file)
-        #     tmp = torch.load(resume_file)
-        #     start_epoch = tmp['epoch']+1
-        #     print("restored epoch is" , tmp['epoch'])
-        #     state = tmp['state']
-        #     state_keys = list(state.keys())
-        #     print("2.>>>>>>>>>>>>>>>>>>>>>", state_keys)
-        #     for i, key in enumerate(state_keys):
-        #         if "module." in key:
-        #             newkey = key.replace("module.",
-        #                                  "")  # an architecture model has attribute 'feature', load architecture feature to backbone by casting name from 'feature.trunk.xx' to 'trunk.xx'
-        #             state[newkey] = state.pop(key)
-        #     print("3.>>>>>>>>>>>>>>>>>>>>>", state_keys)
-        #     model.load_state_dict(state)
-        #
-        # else:
-        #
-        #     resume_rotate_file_dir = params.checkpoint_dir.replace("S2M2_R","rotation")
-        #     #resume_rotate_file_dir = params.checkpoint_dir
-        #     print("1111111111111111111111111111", resume_rotate_file_dir)
-        #     resume_file = get_resume_file(resume_rotate_file_dir)
-        #     #print("resume_file111111111111111" , resume_file)
-        #     tmp = torch.load(resume_file)
-        #     start_epoch = tmp['epoch']+1
-        #     print("restored epoch is", tmp['epoch'])
-        #     state = tmp['state']
-        #     state_keys = list(state.keys())
-        #     '''
-        #     for i, key in enumerate(state_keys):
-        #         if "feature." in key:
-        #             newkey = key.replace("feature.","")  # an architecture model has attribute 'feature', load architecture feature to backbone by casting name from 'feature.trunk.xx' to 'trunk.xx'
-        #             state[newkey] = state.pop(key)
-        #         else:
-        #             state[key.replace("classifier.","linear.")] =  state[key]
-        #             state.pop(key)
-        #     '''
-        #     model.load_state_dict(state)
+        if params.resume:
+
+            resume_file = get_resume_file(params.checkpoint_dir)
+            print("resume_file" , resume_file)
+            tmp = torch.load(resume_file)
+            start_epoch = tmp['epoch']+1
+            print("restored epoch is" , tmp['epoch'])
+            state = tmp['state']
+            state_keys = list(state.keys())
+            print("2.>>>>>>>>>>>>>>>>>>>>>", state_keys)
+            for i, key in enumerate(state_keys):
+                if "module." in key:
+                    newkey = key.replace("module.",
+                                         "")  # an architecture model has attribute 'feature', load architecture feature to backbone by casting name from 'feature.trunk.xx' to 'trunk.xx'
+                    state[newkey] = state.pop(key)
+            print("3.>>>>>>>>>>>>>>>>>>>>>", state_keys)
+            model.load_state_dict(state)
+
+        else:
+
+            resume_rotate_file_dir = params.checkpoint_dir.replace("S2M2_R","rotation")
+            #resume_rotate_file_dir = params.checkpoint_dir
+            print("1111111111111111111111111111", resume_rotate_file_dir)
+            resume_file = get_resume_file(resume_rotate_file_dir)
+            #print("resume_file111111111111111" , resume_file)
+            tmp = torch.load(resume_file)
+            start_epoch = tmp['epoch']+1
+            print("restored epoch is", tmp['epoch'])
+            state = tmp['state']
+            state_keys = list(state.keys())
+            '''
+            for i, key in enumerate(state_keys):
+                if "feature." in key:
+                    newkey = key.replace("feature.","")  # an architecture model has attribute 'feature', load architecture feature to backbone by casting name from 'feature.trunk.xx' to 'trunk.xx'
+                    state[newkey] = state.pop(key)
+                else:
+                    state[key.replace("classifier.","linear.")] =  state[key]
+                    state.pop(key)
+            '''
+            model.load_state_dict(state)
 
 
         model = train_s2m2(base_loader, base_loader_test,  model, start_epoch, start_epoch+stop_epoch, params, {})
@@ -378,14 +367,14 @@ if __name__ == '__main__':
                 model = torch.nn.DataParallel(model, device_ids = range(torch.cuda.device_count()))  
             model.cuda()
 
-        # if params.resume:
-        #     resume_file = get_resume_file(params.checkpoint_dir)
-        #     print("resume_file" , resume_file)
-        #     tmp = torch.load(resume_file)
-        #     start_epoch = tmp['epoch']+1
-        #     print("restored epoch is" , tmp['epoch'])
-        #     state = tmp['state']
-        #     model.load_state_dict(state)
+        if params.resume:
+            resume_file = get_resume_file(params.checkpoint_dir)
+            print("resume_file" , resume_file)
+            tmp = torch.load(resume_file)
+            start_epoch = tmp['epoch']+1
+            print("restored epoch is" , tmp['epoch'])
+            state = tmp['state']
+            model.load_state_dict(state)
 
         model = train_rotation(base_loader, base_loader_test, model, start_epoch, stop_epoch, params, {})
 

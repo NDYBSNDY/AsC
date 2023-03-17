@@ -96,7 +96,7 @@ def loadDataSet(dsname):
 
     Semset = _load_pickle2(_datasetFeaturesFiles2[dssem])
 
-    # 取每类中最小图片数作为类数
+
     # Computing the number of items per class in the MSD
     _min_examples = dataset["labels"].shape[0]
 
@@ -166,7 +166,7 @@ def GenerateRun(iRun, cfg, regenRState=False, generate=True):
 
             Semset[i] = semantics[classes[i], shuffle_indices1, :][:cfg['sem']]
 
-    # 合并语义与支持集+查询集数组
+
     if generate:
         SDset = torch.zeros(
             (cfg['ways'], cfg['sem']+cfg['shot'], data.shape[2]))

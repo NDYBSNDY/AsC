@@ -46,20 +46,6 @@ def MSDgetclip():
             {'features': text_features, 'labels': class_id})
     savemat("checkpoints/MSD/WideResNet28_10_S2M2_R/last/Wrn.mat", {'features': image_features, 'labels': img_id})
 
-    # # Pick the top 5 most similar labels for the image
-    # image_features /= image_features.norm(dim=-1, keepdim=True)
-    # text_features /= text_features.norm(dim=-1, keepdim=True)
-
-    # similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
-    # values, indices = similarity[0].topk(5)
-
-    # # Print the result
-    # print("\nTop predictions:\n")
-    # for value, index in zip(values, indices):
-    #     print(f"{class_name[index]:>16s}: {100 * value.item():.2f}%")
-    #
-    # print("\nReal:" + class_name[class_id])
-    # print(img_path[1])
 
 
 # MSDgetclip()
@@ -111,53 +97,6 @@ def savePlk():
 
 # savePlk()
 
-# # Load the model
-# device = "cuda" if torch.cuda.is_available() else "cpu"
-# model, preprocess = clip.load('ViT-B/32', device)
-#
-# data_path = 'filelists/MSD/clip_q15.json'
-# f = open(data_path, 'r', encoding='utf-8')
-# data = json.load(f)  # json.load() 这种方法是解析一个文件中的数据
-# class_name = data['label_names']
-# img_path = data['image_names']
-# img_id = np.array(data['image_labels'])
-# class_id = np.arange(0, 20, 1)
-#
-# # Prepare the inputs
-# image = Image.open(img_path[0])
-# images_input = preprocess(image).unsqueeze(0).to(device)
-# for i in range(1, 75):
-#     image = Image.open(img_path[i])
-#     image_input = preprocess(image).unsqueeze(0).to(device)
-#     images_input = torch.cat((images_input, image_input), 0)
-# # class_id = img_id[1]
-# text_inputs = torch.cat([clip.tokenize(f"a photo of a {c}") for c in class_name]).to(device)
-#
-# # Calculate features
-# with torch.no_grad():
-#     image_features = model.encode_image(images_input)
-#     text_features = model.encode_text(text_inputs)
-#
-# # Pick the top 5 most similar labels for the image
-# image_features /= image_features.norm(dim=-1, keepdim=True)
-# text_features /= text_features.norm(dim=-1, keepdim=True)
-# similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
-# values, allindices = similarity[0].topk(1)
-# for i in range(1, 75):
-#     values, indices = similarity[i].topk(1)
-#     allindices = torch.cat((allindices, indices), 0)
-#
-# allindices = allindices.cuda()
-# img_id = torch.from_numpy(img_id)
-# img_id = img_id.cuda()
-# matches = img_id.eq(allindices).float()
-# # acc_test = matches[:].mean(1)
-# m = matches.mean().item()
-#
-# # Print the result
-# print("\nTop predictions:\n")
-# for value, index in zip(values, indices):
-#     print(f"{class_name[index]:>16s}: {100 * value.item():.2f}%")
 
 
 def MSDgetWRN():

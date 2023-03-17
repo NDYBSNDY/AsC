@@ -217,7 +217,7 @@ class MAP:
     
     def performEpoch(self, model, epochInfo=None):
      
-        p_xj = model.getProbas() #p_xj：支持集标签 + 查询集合体
+        p_xj = model.getProbas()
         self.probas = p_xj
         
         if self.verbose:
@@ -277,7 +277,7 @@ def dealSem(shot, data, way):
     cfg = {'sem': n_sem, 'shot': n_shot, 'ways': n_ways}
     FSLTask2.loadDataSet(data)
     FSLTask2.setRandomStates(cfg)
-    ndatas = FSLTask2.GenerateRunSet(cfg=cfg) # 打乱顺序取5类，打乱顺序取图片，每个run都不一样，生成需要运行的数据集[10000,5,16,640]
+    ndatas = FSLTask2.GenerateRunSet(cfg=cfg)
     ndatas = ndatas.permute(0, 2, 1, 3).reshape(n_runs, n_samples, -1) # 转换数组形状[1000,80,640]
     # labels = torch.arange(n_ways).view(1, 1, n_ways).expand(n_runs, n_sem+n_shot+n_queries, 5).clone().view(n_runs, n_samples) #[1000,80]
     labels = torch.arange(n_ways).view(1, 1, n_ways).expand(n_runs, n_sem + n_shot, way).clone().view(n_runs, n_samples)  # [1000,100]

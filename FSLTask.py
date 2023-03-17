@@ -77,28 +77,24 @@ def loadDataSet(dsname, cfg):
     # home = expanduser("~")
     print("name_________________", _datasetFeaturesFiles2[dsname])
     dataset = _load_pickle2(_datasetFeaturesFiles2[dsname]) #此时dataset与output相同
-    if (dsname == "DAGM" or dsname == "KTH"):
-        # ways = 10
-        ways = 7
-    if (dsname == "KTD" or dsname == "MSD"):
+    if (dsname == "MSD"):
         # ways = 20
         ways = 15
     if (dsname == "DTD"):
-        ways = 11 #不可见类
+        ways = 11
     if (dsname == "EuroSAT"):
-        ways = 3 #不可见类
+        ways = 3
     if (dsname == "GTSRB"):
-        ways = 10 #不可见类
+        ways = 10
     if (dsname == "MED-3"):
-        ways = 4 #不可见类
+        ways = 4
     if (dsname == "MT-CF"):
-        ways = 3 #不可见类
+        ways = 3
     if (dsname == "RESISC45"):
-        ways = 12 #不可见类
+        ways = 12
     Semset = filter_sem.dealSem(cfg['shot'], dsname, ways)
     # Semset = filter_sem.dealSem(cfg['shot'], dsname, 5)
     print("_____________________________>>>>>>>>", dataset["data"].shape[0])
-    # 取每类中最小图片数作为类数
     # Computing the number of items per class in the MSD
     _min_examples = dataset["labels"].shape[0]
     print("_min_exaples",_min_examples)
@@ -119,7 +115,7 @@ def loadDataSet(dsname, cfg):
     print("Total of {:d} classes, {:d} elements each, with dimension {:d}\n".format(
         data.shape[0], data.shape[1], data.shape[2]), data.shape)
 
-    #对语义向量进行处理
+
     _min_examples1 = Semset["labels"].shape[0]
     print("_min_exaples", _min_examples1)
     for i in range(Semset["labels"].shape[0]):
@@ -156,8 +152,8 @@ def GenerateRun(iRun, cfg, regenRState=False, generate=True):
     if not regenRState:
         np.random.set_state(_randStates[iRun])
 
-    classes = np.random.permutation(np.arange(data.shape[0]))[:cfg["ways"]] #第一个run从20类中随机取5类进行分类
-    shuffle_indices = np.arange(_min_examples) #从0到_min_examples的图标
+    classes = np.random.permutation(np.arange(data.shape[0]))[:cfg["ways"]]
+    shuffle_indices = np.arange(_min_examples)
     shuffle_indices1 = np.arange(_min_examples1)
     dataset = None
     Semset = None
@@ -168,7 +164,7 @@ def GenerateRun(iRun, cfg, regenRState=False, generate=True):
         dataset = torch.zeros(
             (cfg['ways'], cfg['shot']+cfg['queries'], data.shape[2]))#[5,16,640]
     for i in range(cfg['ways']):
-        shuffle_indices = np.random.permutation(shuffle_indices) #打乱图片顺序
+        shuffle_indices = np.random.permutation(shuffle_indices)
         shuffle_indices1 = np.random.permutation(shuffle_indices1)
         if generate:
             dataset[i] = data[classes[i], shuffle_indices, :][:cfg['shot']+cfg['queries']]
@@ -180,10 +176,10 @@ def GenerateRun(iRun, cfg, regenRState=False, generate=True):
 
     for i in range(cfg['ways']):
         if generate:
-            # 拼凑语义加入支持集
+
             SDset[i] = torch.cat([Semset[i], dataset[i]], axis=0)
     dataset = SDset
-    #测试 对所有类用自注意力
+
     # import SelfAttention
     # C = 640
     # num_head = 8
