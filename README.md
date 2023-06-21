@@ -3,7 +3,7 @@
 ## Overview
 > Surface defect detection is one of the most important vision-based measurements for intelligent manufacturing. Existing detection methods mainly require massive numbers of defect samples to train the model to detect the defects. Nowadays, inadequate defect samples and labels are inevitably encountered in industrial data environments due to the highly automated and stable production lines escalatingly deployed, causing fewer and fewer defective products to be produced.  Consequently, manual interventions are deeply required to analyze the abnormal sample once an unseen defect accidentally emerges that significantly decreases productivity. To this end, this paper proposes a novel few/zero-shot compatible surface defect detection method without requiring massive or even any defect samples to detect surface defects. First, a novel contrastive generator is proposed to use defects' text descriptions to synthesize “fake” visual features for those rare defects. Then, the synthesized visual features (for support samples) are fused with “real” visual features (for query samples) into a similarity graph to align the relationships between support samples and query samples. After, a class center optimization method is proposed to iteratively update the similarity matrix of the graph to obtain the classification probabilities for the query samples. Massive experiments on seven fine-grained datasets show that our method gains an average of +8.29% improvements on few-shot detection tasks and achieves an average of +8.23% improvements on zero-shot detection tasks compared with the state-of-the-art method. Moreover, the proposed method is deployed in a real-world prototype system to evaluate the feasibility and practical implementation.
 
-![generation_framework](./img/1.jpg)
+![generation_framework](./img/1.png)
 ---
 ---
 ## Data Preparation
@@ -27,14 +27,18 @@ First extraction feature, please run:
 ```
 python clip.py
 ```
-To install all the dependency packages, please run:
+To test the datasets, please run:
 ```
-pip install -r requirements.txt
+To test the zero/few-shot classification, try changing the shot parameter in the test.py file: shot=1, shot=3, or shot=5.
+python test.py
 ```
-
+Hyperparameter Settings:
+```
+k=10 kappa=9 beta=0.4
+```
 ## experimental result 
 ---
-![generation_framework](./img/2.jpg)
+![generation_framework](./img/2.png)
 
 ## References
 We adapt our dataloader classes from the following project:
